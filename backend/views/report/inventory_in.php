@@ -8,7 +8,7 @@ use backend\models\SalesSearch;
 /* @var $searchModel backend\models\SalesSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Today\'s sales summary report');
+$this->title = Yii::t('app', 'Inventory In report');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="sales-index">
@@ -16,33 +16,27 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <?php
-    $searchModel = new SalesSearch();
-    $dataProvider = $searchModel->searchTodaySales();
+    //$searchModel = new SalesSearch();
+    //$dataProvider = $searchModel->searchTodaySales();
     ?>
     <?= DataTables::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
-            //'id',
-            //'trn_dt',
-            'total_qty',
-            'total_amount',
-            'paid_amount',
+            'prchs_dt',
             [
-                'attribute'=>'payment_method',
-                'value'=>'payMethod.method_name',
+                    'attribute'=>'product_id',
+                    'value'=>'product.product_name',
             ],
-            'due_amount',
-            // 'source_ref_number',
-            // 'notes',
-            'customer_name',
-            // 'maker_id',
-            // 'maker_time',
-            'status',
+            'qty',
+            'previous_balance',
+            'balance',
+            [
+                'attribute'=>'purchase_invoice_id',
+                'value'=>'purchaseInvoice.invoice_number',
+            ],
 
-            //['class' => 'yii\grid\ActionColumn','header'=>Yii::t('app',"Actions")],
         ],
         'clientOptions' => [
             "lengthMenu"=> [[20,-1], [20,Yii::t('app',"All")]],

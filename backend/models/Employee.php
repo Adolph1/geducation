@@ -35,9 +35,9 @@ class Employee extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['first_name', 'last_name', 'date_of_birth', 'job_title', 'branch_id'], 'required'],
+            [['first_name', 'last_name', 'date_of_birth', 'job_title', 'branch_id','department_id'], 'required'],
             [['date_of_birth', 'maker_time'], 'safe'],
-            [['branch_id'], 'integer'],
+            [['branch_id','department_id'], 'integer'],
             [['first_name', 'middle_name', 'last_name', 'job_title', 'maker_id'], 'string', 'max' => 200],
             [['branch_id'], 'exist', 'skipOnError' => true, 'targetClass' => Branch::className(), 'targetAttribute' => ['branch_id' => 'id']],
         ];
@@ -56,6 +56,7 @@ class Employee extends \yii\db\ActiveRecord
             'date_of_birth' => Yii::t('app', 'Date Of Birth'),
             'job_title' => Yii::t('app', 'Job Title'),
             'branch_id' => Yii::t('app', 'Branch'),
+            'department_id' => Yii::t('app', 'Department'),
             'maker_id' => Yii::t('app', 'Maker ID'),
             'maker_time' => Yii::t('app', 'Maker Time'),
         ];
@@ -69,11 +70,27 @@ class Employee extends \yii\db\ActiveRecord
         return $this->hasOne(Branch::className(), ['id' => 'branch_id']);
     }
 
+    public function getDepartment()
+    {
+        return $this->hasOne(Department::className(), ['id' => 'department_id']);
+    }
+
     public static function getBranchID($id)
     {
-        $emp=Employee::find()->where(['id'=>$id])->one();
+        $emp=Employee::findOne($id);
         if($emp!=null){
             return $emp->branch_id;
+        }
+        else{
+            return "";
+        }
+    }
+
+    public static function getDepartmentID($id)
+    {
+        $emp=Employee::findOne($id);
+        if($emp!=null){
+            return $emp->department_id;
         }
         else{
             return "";

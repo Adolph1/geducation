@@ -20,6 +20,7 @@ class m170308_140213_create_tbl_employee_table extends Migration
             'date_of_birth'=>$this->date()->notNull(),
             'job_title'=>$this->string(200)->notNull(),
             'branch_id'=>$this->integer()->notNull(),
+            'department_id'=>$this->integer()->notNull(),
             'maker_id'=>$this->string(200),
             'maker_time'=>$this->dateTime(),
         ]);
@@ -41,6 +42,25 @@ class m170308_140213_create_tbl_employee_table extends Migration
             'id',
             'RESTRICT'
         );
+
+
+        // creates index for column `department_id`
+        $this->createIndex(
+            'idx-tbl_employee-department_id',
+            'tbl_employee',
+            'department_id'
+        );
+
+
+        // add foreign key for table `tbl_department`
+        $this->addForeignKey(
+            'fk-tbl_employee-department_id',
+            'tbl_employee',
+            'department_id',
+            'tbl_department',
+            'id',
+            'RESTRICT'
+        );
     }
 
     /**
@@ -53,9 +73,20 @@ class m170308_140213_create_tbl_employee_table extends Migration
             'tbl_employee'
         );
 
-        // drops index for column `supplier_id`
+        // drops index for column `branch_id`
         $this->dropIndex(
             'idx-tbl_employee-branch_id',
+            'tbl_employee'
+        );
+
+        $this->dropForeignKey(
+            'fk-tbl_employee-department_id',
+            'tbl_employee'
+        );
+
+        // drops index for column `department_id`
+        $this->dropIndex(
+            'idx-tbl_employee-department_id',
             'tbl_employee'
         );
         $this->dropTable('tbl_employee');

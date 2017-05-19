@@ -34,6 +34,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     'attribute'=>'branch_id',
                     'value'=>'branch.branch_name',
             ],
+            [
+                'attribute'=>'department_id',
+                'value'=>'department.dept_name',
+            ],
             // 'maker_id',
             // 'maker_time',
 

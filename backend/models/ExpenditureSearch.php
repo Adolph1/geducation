@@ -18,8 +18,8 @@ class ExpenditureSearch extends Expenditure
     public function rules()
     {
         return [
-            [['id', 'branch_id'], 'integer'],
-            [['exp_dt', 'description', 'maker_id', 'maker_time'], 'safe'],
+            [['id', 'type', 'branch_id', 'department_id'], 'integer'],
+            [['exp_dt', 'description', 'fund_source', 'payment_method', 'reference_no', 'attachment', 'status', 'maker_id', 'maker_time', 'checker', 'checker_time'], 'safe'],
             [['amount'], 'number'],
         ];
     }
@@ -63,12 +63,21 @@ class ExpenditureSearch extends Expenditure
             'id' => $this->id,
             'exp_dt' => $this->exp_dt,
             'amount' => $this->amount,
+            'type' => $this->type,
             'branch_id' => $this->branch_id,
+            'department_id' => $this->department_id,
             'maker_time' => $this->maker_time,
+            'checker_time' => $this->checker_time,
         ]);
 
         $query->andFilterWhere(['like', 'description', $this->description])
-            ->andFilterWhere(['like', 'maker_id', $this->maker_id]);
+            ->andFilterWhere(['like', 'fund_source', $this->fund_source])
+            ->andFilterWhere(['like', 'payment_method', $this->payment_method])
+            ->andFilterWhere(['like', 'reference_no', $this->reference_no])
+            ->andFilterWhere(['like', 'attachment', $this->attachment])
+            ->andFilterWhere(['like', 'status', $this->status])
+            ->andFilterWhere(['like', 'maker_id', $this->maker_id])
+            ->andFilterWhere(['like', 'checker', $this->checker]);
 
         return $dataProvider;
     }
@@ -94,4 +103,5 @@ class ExpenditureSearch extends Expenditure
 
         return $dataProvider;
     }
+
 }

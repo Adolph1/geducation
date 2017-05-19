@@ -36,6 +36,8 @@ use backend\models\User;
     <?= $form->field($model, 'job_title')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'branch_id')->dropDownList(\backend\models\Branch::getAll(),['prompt'=>Yii::t('app','--Select--')]) ?>
+
+            <?= $form->field($model, 'department_id')->dropDownList(\backend\models\Department::getAll(),['prompt'=>Yii::t('app','--Select--')]) ?>
         <?php
         if($model->isNewRecord)
         {?>

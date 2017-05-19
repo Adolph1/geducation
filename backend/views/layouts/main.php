@@ -208,7 +208,48 @@ desired effect
                     "items" => [
                         ["label" =>Yii::t('app','Home'), "url" =>  Yii::$app->homeUrl, "icon" => "home"],
 
-                        ["label" =>Yii::t('app','Expenditures'), "url" =>  ["/expenditure/index"], "icon" => "fa fa-money",],
+                        [
+                                "label" =>Yii::t('app','Expenditures'),
+                                "url" =>  ["#"],
+                                "icon" => "fa fa-money",
+                            "items" => [
+
+                                [
+                                    'visible' => yii::$app->User->can('BranchManager')|| yii::$app->User->can('Accountant')|| yii::$app->User->can('admin'),
+                                    "label" =>  Yii::t('app', 'New Expenditure'),
+                                    "url" => ["/expenditure/create"],
+                                    "icon" => "fa fa-plus",
+                                ],
+
+                                [
+                                    'visible' => yii::$app->User->can('BranchManager')|| yii::$app->User->can('Accountant')|| yii::$app->User->can('admin'),
+                                    "label" => "Expenditures list",
+                                    "url" =>["/expenditure/index"],
+                                    "icon" => "fa fa-eye",
+                                ],
+                                [
+                                    'visible' => yii::$app->User->can('BranchManager')|| yii::$app->User->can('Accountant')|| yii::$app->User->can('admin'),
+                                    "label" => "Pending expenditures",
+                                    "url" =>["/expenditure/pending"],
+                                    "icon" => "fa fa-eye",
+                                ],
+
+                                [
+                                    'visible' => yii::$app->User->can('Accountant')|| yii::$app->User->can('admin'),
+                                    "label" => "Add expenditure type",
+                                    "url" =>["/expenditure-type/create"],
+                                    "icon" => "fa fa-plus",
+                                ],
+
+                                [
+                                    'visible' => yii::$app->User->can('Accountant')|| yii::$app->User->can('admin'),
+                                    "label" => "Expenditure types",
+                                    "url" =>["/expenditure-type/index"],
+                                    "icon" => "fa fa-eye",
+                                ],
+
+                            ]
+                        ],
 
                         [
                                 'visible' => yii::$app->User->can('Accountant')||yii::$app->User->can('admin'),
@@ -222,9 +263,15 @@ desired effect
                                 "url" =>  ["/branch/index"], "icon" => "fa fa-sitemap",
                         ],
 
+                        [
+                            'visible' => yii::$app->User->can('Accountant')||yii::$app->User->can('admin'),
+                            "label" =>Yii::t('app','Departments'),
+                            "url" =>  ["/department/index"], "icon" => "fa fa-sitemap",
+                        ],
+
 
                         [
-                                'visible' => yii::$app->User->can('Accountant')||yii::$app->User->can('admin'),
+                                'visible' => yii::$app->User->can('BranchManager')||yii::$app->User->can('Accountant')||yii::$app->User->can('admin'),
                                 "label" =>Yii::t('app','Reports'),
                                 "url" =>  ["/report/index"], "icon" => "fa fa-bar-chart",
                         ],
@@ -235,19 +282,6 @@ desired effect
                             "url" => "#",
                             "icon" => "fa fa-gears",
                             "items" => [
-                                [
-                                    'visible' => (Yii::$app->user->identity->username == 'admin'),
-                                    "label" => Yii::t('app','Language'),
-                                    "url" => ["/language/index"],
-                                    "icon" => "fa fa-angle-double-right",
-                                ],
-
-                                [
-                                    'visible' => (Yii::$app->user->identity->username == 'admin'),
-                                    "label" => "Jobs",
-                                    "url" =>["/job/index"],
-                                    "icon" => "fa fa-angle-double-right",
-                                ],
 
                                 [
                                     'visible' => (Yii::$app->user->identity->username == 'admin'),
@@ -257,20 +291,8 @@ desired effect
                                 ],
                                 [
                                     'visible' => (Yii::$app->user->identity->username == 'admin'),
-                                    "label" => "Modules",
-                                    "url" => ["/system-module/index"],
-                                    "icon" => "fa fa-angle-double-right",
-                                ],
-                                [
-                                    'visible' => (Yii::$app->user->identity->username == 'admin'),
-                                    "label" => "Backup",
-                                    "url" => ["/backup"],
-                                    "icon" => "fa fa-angle-double-right",
-                                ],
-                                [
-                                    'visible' => (Yii::$app->user->identity->username == 'admin'),
-                                    "label" => "Users",
-                                    "url" => ["/user"],
+                                    "label" =>  Yii::t('app', 'Users'),
+                                    "url" => ["/user/index"],
                                     "icon" => "fa fa-user",
                                 ],
 
@@ -413,19 +435,39 @@ desired effect
 <?php $this->endPage() ?>
 
 <script>
-    $("#purchasemaster-country").change(function(){
-        var id =document.getElementById("purchasemaster-country").value;
-        if(id==1){
-            $( "#rates" ).hide( "slow", function() {
+    $("#expenditure-fund_source").change(function(){
+        var id =document.getElementById("expenditure-fund_source").value;
+        if(id=='O'){
+            $( "#fund_source" ).hide( "slow", function() {
                 //alert( "Animation complete." );
             });
         }
-        else if(id==2){
-            $( "#rates" ).show( "slow", function() {
+        else if(id=='I'){
+            $( "#fund_source" ).show( "slow", function() {
             });
         }
-        else if(id==0){
-            $( "#rates" ).show( "slow", function() {
+        else if(id==""){
+            $( "#fund_source" ).show( "slow", function() {
+            });
+        }
+
+
+    });
+
+
+  $(document).ready(function(){
+        var id =document.getElementById("expenditure-fund_source").value;
+        if(id=='O'){
+            $( "#fund_source" ).hide( "slow", function() {
+                //alert( "Animation complete." );
+            });
+        }
+        else if(id=='I'){
+            $( "#fund_source" ).show( "slow", function() {
+            });
+        }
+        else if(id==""){
+            $( "#fund_source" ).show( "slow", function() {
             });
         }
 
@@ -434,20 +476,22 @@ desired effect
 
 </script>
 
+
+
 <script>
-    $(document).ready(function(){
-        var id =document.getElementById("purchasemaster-country").value;
-        if(id==1){
-            $( "#rates" ).hide( "slow", function() {
+    $("#expenditure-fund_source").change(function(){
+        var id =document.getElementById("expenditure-fund_source").value;
+        if(id=='O'){
+            $( "#fund_source" ).hide( "slow", function() {
                 //alert( "Animation complete." );
             });
         }
-        else if(id==2){
-            $( "#rates" ).show( "slow", function() {
+        else if(id=='I'){
+            $( "#fund_source" ).show( "slow", function() {
             });
         }
-        else if(id==0){
-            $( "#rates" ).show( "slow", function() {
+        else if(id==""){
+            $( "#fund_source" ).show( "slow", function() {
             });
         }
 

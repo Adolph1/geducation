@@ -16,10 +16,19 @@ class m170511_081819_create_tbl_expenditure_table extends Migration
             'id' => $this->primaryKey(),
             'exp_dt'=>$this->date()->notNull(),
             'amount'=>$this->decimal()->notNull(),
+            'type'=>$this->integer()->notNull(),
             'description'=>$this->string(200)->notNull(),
             'branch_id'=>$this->integer()->notNull(),
+            'department_id'=>$this->integer(),
+            'fund_source'=>$this->char(1)->notNull(),
+            'payment_method'=>$this->char(1),
+            'reference_no'=>$this->string(200),
+            'attachment'=>$this->string(200),
+            'status'=>$this->char(1),
             'maker_id'=>$this->string(200),
             'maker_time'=>$this->dateTime(),
+            'checker'=>$this->string(200),
+            'checker_time'=>$this->dateTime(),
         ]);
 
         // creates index for column `branch_id`

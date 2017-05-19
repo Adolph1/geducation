@@ -39,7 +39,7 @@ class ReportSearch extends Report
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    /*public function search($params)
     {
         $query = Report::find();
 
@@ -68,5 +68,22 @@ class ReportSearch extends Report
             ->andFilterWhere(['like', 'path', $this->path]);
 
         return $dataProvider;
+    }*/
+
+    public function search($brnch,$from,$to)
+    {
+
+
+            $query = Expenditure::find();
+
+            $dataProvider = new ActiveDataProvider([
+                'query' => $query,
+            ]);
+            //$query->select(['prchs_dt,price,product_id,sum(qty) AS qty,sum(total) AS total,(select supplier_id from tbl_purchase_invoice where id=purchase_invoice_id) as purchase_invoice_id']);
+            $query->andWhere(['status'=>'U','branch_id'=>$brnch]);
+            $query->andFilterWhere(['between', 'exp_dt', $from, $to]);
+            //$query->groupBy(['prchs_dt','product_id',]);
+            return $dataProvider;
+
     }
 }

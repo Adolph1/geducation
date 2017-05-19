@@ -8,6 +8,7 @@ use backend\models\ExpenditureSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * ExpenditureController implements the CRUD actions for Expenditure model.
@@ -39,11 +40,19 @@ class ExpenditureController extends Controller
 
             $searchModel = new ExpenditureSearch();
             $dataProvider = $searchModel->searchByUser(Yii::$app->request->queryParams);
+            if($dataProvider!=null){
+                return $this->render('index', [
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+                ]);
+            }
+            else{
+                $model=new Expenditure();
+                return $this->render('create', [
+                    'model' => $model,
+                ]);
 
-            return $this->render('index', [
-                'searchModel' => $searchModel,
-                'dataProvider' => $dataProvider,
-            ]);
+            }
         }
         elseif (yii::$app->User->can('Accountant')||yii::$app->User->can('admin')){
             $searchModel = new ExpenditureSearch();
@@ -64,9 +73,20 @@ class ExpenditureController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+        if(yii::$app->User->can('BranchManager')) {
+            $model = $this->findModel($id);
+            if($model->branch_id==\backend\models\Employee::getBranchID(Yii::$app->user->identity->emp_id) && $model->department_id==\backend\models\Employee::getDepartmentID(Yii::$app->user->identity->emp_id)) {
+                return $this->render('view', [
+                    'model' => $this->findModel($id),
+                ]);
+            }
+            else
+            {
+                Yii::$app->session->setFlash('danger', 'You dont have permission to view this expenditure.');
+                return $this->redirect(['index']);
+            }
+
+        }
     }
 
     /**
@@ -79,10 +99,18 @@ class ExpenditureController extends Controller
         if(yii::$app->User->can('createExpenditure')) {
             $model = new Expenditure();
             $model->branch_id=\backend\models\Employee::getBranchID(Yii::$app->user->identity->emp_id);
+            $model->department_id=\backend\models\Employee::getDepartmentID(Yii::$app->user->identity->emp_id);
             $model->maker_id=Yii::$app->user->identity->username;
             $model->maker_time=date('Y-m-d:H:i:s');
+            $model->status='U';
 
-            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            if ($model->load(Yii::$app->request->post())) {
+                $model->attachment = UploadedFile::getInstance($model, 'attachment_file');
+                if ($model->attachment!=null) {
+                    $model->attachment->saveAs('uploads/' . $model->attachment->baseName . '.' . $model->attachment->extension);
+                    $model->attachment = $model->attachment->baseName . '.' . $model->attachment->extension;
+                    $model->save();
+                }
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
                 return $this->render('create', [
@@ -107,13 +135,30 @@ class ExpenditureController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        if($model->status=='U') {
+            $model->branch_id = \backend\models\Employee::getBranchID(Yii::$app->user->identity->emp_id);
+            $model->department_id = \backend\models\Employee::getDepartmentID(Yii::$app->user->identity->emp_id);
+            $model->maker_id = Yii::$app->user->identity->username;
+            $model->maker_time = date('Y-m-d:H:i:s');
+            $model->status = 'U';
+            if ($model->load(Yii::$app->request->post())) {
+                $model->attachment = UploadedFile::getInstance($model, 'attachment_file');
+                if ($model->attachment!=null) {
+                    $model->attachment->saveAs('uploads/' . $model->attachment->baseName . '.' . $model->attachment->extension);
+                    $model->attachment = $model->attachment->baseName . '.' . $model->attachment->extension;
+                    $model->save();
+                }
+                return $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                return $this->render('update', [
+                    'model' => $model,
+                ]);
+            }
+        }
+        else{
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
+            Yii::$app->session->setFlash('danger', 'You cant update the authorised expenditure.');
+            return $this->redirect(['index']);
         }
     }
 

@@ -3,16 +3,16 @@
 namespace backend\controllers;
 
 use Yii;
-use backend\models\Report;
-use backend\models\ReportSearch;
+use backend\models\PaymentMethod;
+use backend\models\PaymentMethodSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * ReportController implements the CRUD actions for Report model.
+ * PaymentMethodController implements the CRUD actions for PaymentMethod model.
  */
-class ReportController extends Controller
+class PaymentMethodController extends Controller
 {
     /**
      * @inheritdoc
@@ -30,59 +30,22 @@ class ReportController extends Controller
     }
 
     /**
-     * Lists all Report models.
+     * Lists all PaymentMethod models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $model = new Report();
+        $searchModel = new PaymentMethodSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if(isset($_GET['ReportSearch'])){
-        $searchModel = new ReportSearch();
-        if(yii::$app->User->can('Accountant')) {
-            $branch = $_GET['ReportSearch']['branch'];
-        }else{
-            $branch=\backend\models\Employee::getBranchID(Yii::$app->user->identity->emp_id);
-        }
-        $from = $_GET['ReportSearch']['from'];
-        $to = $_GET['ReportSearch']['to'];
-
-
-
-
-       if ($branch == \backend\models\Employee::getBranchID(Yii::$app->user->identity->emp_id)) {
-            $dataProvider = $searchModel->search($branch,$from,$to);
-            return $this->render('report', [
-                'searchModel' => $searchModel,
-                'dataProvider' => $dataProvider,
-                'model' => $model,
-                'from'=>$from,
-                'to'=>$to,
-            ]);
-        }
-        else{
-            $searchModel = new ReportSearch();
-            $dataProvider = $searchModel->search('','','');
-            return $this->render('index', [
-                'searchModel' => $searchModel,
-                'dataProvider' => $dataProvider,
-                'model' => $model,
-            ]);
-        }
-
-    } else{
-            $searchModel = new ReportSearch();
-            $dataProvider = $searchModel->search('','','');
-            return $this->render('index', [
-                'searchModel' => $searchModel,
-                'dataProvider' => $dataProvider,
-                'model' => $model,
-            ]);
-        }
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 
     /**
-     * Displays a single Report model.
+     * Displays a single PaymentMethod model.
      * @param integer $id
      * @return mixed
      */
@@ -94,13 +57,13 @@ class ReportController extends Controller
     }
 
     /**
-     * Creates a new Report model.
+     * Creates a new PaymentMethod model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Report();
+        $model = new PaymentMethod();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -112,7 +75,7 @@ class ReportController extends Controller
     }
 
     /**
-     * Updates an existing Report model.
+     * Updates an existing PaymentMethod model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -131,7 +94,7 @@ class ReportController extends Controller
     }
 
     /**
-     * Deletes an existing Report model.
+     * Deletes an existing PaymentMethod model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -144,27 +107,18 @@ class ReportController extends Controller
     }
 
     /**
-     * Finds the Report model based on its primary key value.
+     * Finds the PaymentMethod model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Report the loaded model
+     * @return PaymentMethod the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Report::findOne($id)) !== null) {
+        if (($model = PaymentMethod::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
-    }
-
-    /**
-     * gets today sales report
-     */
-
-    public function actionTodaysales()
-    {
-        return $this->render('today_sales');
     }
 }
