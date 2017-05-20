@@ -2,6 +2,8 @@
 
 namespace backend\controllers;
 
+use backend\models\Branch;
+use backend\models\Employee;
 use Yii;
 use backend\models\Report;
 use backend\models\ReportSearch;
@@ -37,48 +39,50 @@ class ReportController extends Controller
     {
         $model = new Report();
 
-        if(isset($_GET['ReportSearch'])){
-        $searchModel = new ReportSearch();
-        if(yii::$app->User->can('Accountant')) {
-            $branch = $_GET['ReportSearch']['branch'];
-        }else{
-            $branch=\backend\models\Employee::getBranchID(Yii::$app->user->identity->emp_id);
+        if(isset($_GET['ReportSearch'])) {
+            if (yii::$app->User->can('Accountant')) {
+                $searchModel = new ReportSearch();
+                $branch = $_GET['ReportSearch']['branch'];
+                $from = $_GET['ReportSearch']['from'];
+                $to = $_GET['ReportSearch']['to'];
+
+                $dataProvider = $searchModel->search($branch, '', '');
+                return $this->render('report', [
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+                    'model' => $model,
+                    'from' => $from,
+                    'to' => $to,
+                ]);
+            } elseif (yii::$app->User->can('BranchManager')) {
+                $searchModel = new ReportSearch();
+                $from = $_GET['ReportSearch']['from'];
+                $to = $_GET['ReportSearch']['to'];
+                $branch = Employee::getBranchID(Yii::$app->user->identity->emp_id);
+                $dataProvider = $searchModel->search($branch, '', '');
+                return $this->render('report', [
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+                    'model' => $model,
+                    'from' => $from,
+                    'to' => $to,
+                ]);
+            }
         }
-        $from = $_GET['ReportSearch']['from'];
-        $to = $_GET['ReportSearch']['to'];
+            else{
+                $searchModel = new ReportSearch();
+                $dataProvider = $searchModel->search('', '', '');
+                return $this->render('index', [
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+                    'model' => $model,
+                ]);
+
+            }
 
 
 
 
-       if ($branch == \backend\models\Employee::getBranchID(Yii::$app->user->identity->emp_id)) {
-            $dataProvider = $searchModel->search($branch,$from,$to);
-            return $this->render('report', [
-                'searchModel' => $searchModel,
-                'dataProvider' => $dataProvider,
-                'model' => $model,
-                'from'=>$from,
-                'to'=>$to,
-            ]);
-        }
-        else{
-            $searchModel = new ReportSearch();
-            $dataProvider = $searchModel->search('','','');
-            return $this->render('index', [
-                'searchModel' => $searchModel,
-                'dataProvider' => $dataProvider,
-                'model' => $model,
-            ]);
-        }
-
-    } else{
-            $searchModel = new ReportSearch();
-            $dataProvider = $searchModel->search('','','');
-            return $this->render('index', [
-                'searchModel' => $searchModel,
-                'dataProvider' => $dataProvider,
-                'model' => $model,
-            ]);
-        }
     }
 
     /**

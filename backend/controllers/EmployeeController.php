@@ -72,6 +72,7 @@ class EmployeeController extends Controller
             if($model->save()){
                 $user->emp_id=$model->id;
                 $user->save();
+                Yii::$app->authManager->assign(Yii::$app->authManager->getRole($user->role), $user->id);
             }
             return $this->redirect(['view', 'id' => $model->id]);
         } else {

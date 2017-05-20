@@ -32,58 +32,34 @@ class ReportSearch extends Report
         return Model::scenarios();
     }
 
-    /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     *
-     * @return ActiveDataProvider
-     */
-    /*public function search($params)
-    {
-        $query = Report::find();
 
-        // add conditions that should always apply here
-
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-        ]);
-
-        $this->load($params);
-
-        if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
-            return $dataProvider;
-        }
-
-        // grid filtering conditions
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'module' => $this->module,
-            'status' => $this->status,
-        ]);
-
-        $query->andFilterWhere(['like', 'report_name', $this->report_name])
-            ->andFilterWhere(['like', 'path', $this->path]);
-
-        return $dataProvider;
-    }*/
 
     public function search($brnch,$from,$to)
     {
+            if($brnch==null) {
 
+                $query = Expenditure::find();
 
-            $query = Expenditure::find();
+                $dataProvider = new ActiveDataProvider([
+                    'query' => $query,
+                ]);
+                $query->andWhere(['status' => 'A']);
+                $query->andFilterWhere(['between', 'exp_dt', $from, $to]);
+                return $dataProvider;
+            }
+            else{
 
-            $dataProvider = new ActiveDataProvider([
-                'query' => $query,
-            ]);
-            //$query->select(['prchs_dt,price,product_id,sum(qty) AS qty,sum(total) AS total,(select supplier_id from tbl_purchase_invoice where id=purchase_invoice_id) as purchase_invoice_id']);
-            $query->andWhere(['status'=>'U','branch_id'=>$brnch]);
-            $query->andFilterWhere(['between', 'exp_dt', $from, $to]);
-            //$query->groupBy(['prchs_dt','product_id',]);
-            return $dataProvider;
+                $query = Expenditure::find();
+
+                $dataProvider = new ActiveDataProvider([
+                    'query' => $query,
+                ]);
+                $query->andWhere(['status' => 'A','branch_id'=>$brnch]);
+                $query->andFilterWhere(['between', 'exp_dt', $from, $to]);
+                return $dataProvider;
+            }
+
 
     }
+
 }

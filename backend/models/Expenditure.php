@@ -50,7 +50,7 @@ class Expenditure extends \yii\db\ActiveRecord
             [['amount'], 'number'],
             [['type', 'branch_id', 'department_id'], 'integer'],
             [['description', 'reference_no', 'attachment', 'maker_id', 'checker'], 'string', 'max' => 200],
-            [['fund_source', 'payment_method', 'status'], 'string', 'max' => 1],
+            [['fund_source', 'payment_method', 'status','delete_stat'], 'string', 'max' => 1],
             [['branch_id'], 'exist', 'skipOnError' => true, 'targetClass' => Branch::className(), 'targetAttribute' => ['branch_id' => 'id']],
         ];
     }
@@ -73,6 +73,7 @@ class Expenditure extends \yii\db\ActiveRecord
             'reference_no' => Yii::t('app', 'Reference No'),
             'attachment' => Yii::t('app', 'Attachment'),
             'status' => Yii::t('app', 'Status'),
+            'delete_stat'=>'Delete status',
             'maker_id' => Yii::t('app', 'Maker ID'),
             'maker_time' => Yii::t('app', 'Maker Time'),
             'checker' => Yii::t('app', 'Checker'),

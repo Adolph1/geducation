@@ -10,7 +10,6 @@ use backend\models\ExpenditureType;
 /* @var $model backend\models\Expenditure */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-
 <div class="expenditure-form">
     <div class="panel panel-success">
         <div class="panel-heading">Expenditure Form</div>
@@ -49,19 +48,60 @@ use backend\models\ExpenditureType;
             <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
         </div>
     </div>
-     <div class="row">
-         <div id="fund_source">
-        <div class="col-md-6">
-    <?= $form->field($model, 'payment_method')->dropDownList(PaymentMethod::getAll(),['prompt'=>Yii::t('app','--Select--')]) ?>
-        </div>
-         <div class="col-md-4">
-             <?= $form->field($model, 'reference_no')->textInput(['maxlength' => true]) ?>
-         </div>
-         <div class="col-md-2">
-             <?= $form->field($model, 'attachment_file')->fileInput(['maxlength' => true]) ?>
-         </div>
-         </div>
-     </div>
+            <?php
+            if(!$model->isNewRecord) {
+                if ($model->fund_source == 'O') {
+                    ?>
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <?= $form->field($model, 'payment_method')->dropDownList(PaymentMethod::getAll(), ['prompt' => Yii::t('app', '--Select--')]) ?>
+                        </div>
+                        <div class="col-md-4">
+                            <?= $form->field($model, 'reference_no')->textInput(['maxlength' => true]) ?>
+                        </div>
+                        <div class="col-md-2">
+                            <?= $form->field($model, 'attachment_file')->fileInput(['maxlength' => true]) ?>
+                        </div>
+
+                    </div>
+                    <?php
+                } else {
+
+                    ?>
+
+                    <div class="row">
+                        <div id="fund_source">
+                            <div class="col-md-6">
+                                <?= $form->field($model, 'payment_method')->dropDownList(PaymentMethod::getAll(), ['prompt' => Yii::t('app', '--Select--')]) ?>
+                            </div>
+                            <div class="col-md-4">
+                                <?= $form->field($model, 'reference_no')->textInput(['maxlength' => true]) ?>
+                            </div>
+                            <div class="col-md-2">
+                                <?= $form->field($model, 'attachment_file')->fileInput(['maxlength' => true]) ?>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                }
+            }
+                else{
+            ?>
+            <div class="row">
+                <div id="fund_source">
+                    <div class="col-md-6">
+                        <?= $form->field($model, 'payment_method')->dropDownList(PaymentMethod::getAll(), ['prompt' => Yii::t('app', '--Select--')]) ?>
+                    </div>
+                    <div class="col-md-4">
+                        <?= $form->field($model, 'reference_no')->textInput(['maxlength' => true]) ?>
+                    </div>
+                    <div class="col-md-2">
+                        <?= $form->field($model, 'attachment_file')->fileInput(['maxlength' => true]) ?>
+                    </div>
+                </div>
+            </div>
+            <?php }?>
     <div class="row">
         <div class="col-md-6"></div>
         <div class="col-md-6 text-left">

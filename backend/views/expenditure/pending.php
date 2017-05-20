@@ -8,7 +8,7 @@ use yii\widgets\Pjax;
 /* @var $searchModel backend\models\ExpenditureSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Expenditures list');
+$this->title = Yii::t('app', 'Pending expenditures');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="expenditure-index">
@@ -78,19 +78,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'reference_no',
             [
-                'attribute'=>'status',
-                'value'=>function($model){
-                    if($model->status=='U'){
-                        return 'Pending Approval';
-                    }
-                    elseif($model->status=='A'){
-
-                        return 'Approved';
-
-                    }
-                }
-            ],
-            [
                 'label'=>'attachment',
                 'format' => 'raw',
                 'value'=>function($model){
@@ -111,34 +98,65 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class'=>'yii\grid\ActionColumn',
                 'header'=>'Actions',
-                'template'=>'{view} {delete}',
+                'template'=>'{view} {approve} {reject} {delete}',
                 'buttons'=>[
                     'view' => function ($url, $model) {
                         $url=['view','id' => $model->id];
-                        return Html::a('<span class="fa fa-eye"></span>', $url, [
-                            'title' => 'View',
-                            'data-toggle'=>'tooltip','data-original-title'=>'Save',
-                            'class'=>'btn btn-info',
 
-                        ]);
+                            return Html::a('<span class="fa fa-eye"></span>', $url, [
+                                'title' => 'View',
+                                'data-toggle' => 'tooltip', 'data-original-title' => 'Save',
+                                'class' => 'btn btn-info',
+
+                            ]);
 
 
                     },
 
                     'delete' => function ($url, $model) {
                         $url=['delete','id' => $model->id];
-                        return Html::a('<span class="fa fa-times"></span>', $url, [
-                            'title' => 'Delete',
-                            'data-toggle'=>'tooltip','data-original-title'=>'Save',
-                            'class'=>'btn btn-danger',
-                            'data' => [
-                                'confirm' => Yii::t('app', 'Are you sure you want to delete this batch?'),
-                                'method' => 'post',
-                            ],
 
-                        ]);
+                            return Html::a('<span class="fa fa-times"></span>', $url, [
+                                'title' => 'Delete',
+                                'data-toggle' => 'tooltip', 'data-original-title' => 'Save',
+                                'class' => 'btn btn-danger',
+                                'data' => [
+                                    'confirm' => Yii::t('app', 'Are you sure you want to delete this expenditure?'),
+                                    'method' => 'post',
+                                ],
+
+                            ]);
 
 
+                    },
+                    'approve' => function ($url, $model) {
+                        $url=['approve','id' => $model->id];
+                        if(yii::$app->User->can('Accountant')) {
+                            return Html::a('<span class="fa fa-check"></span>', $url, [
+                                'title' => 'Approve',
+                                'data-toggle' => 'tooltip', 'data-original-title' => 'Approve',
+                                'class' => 'btn btn-info',
+
+                            ]);
+                        }
+
+                    },
+
+                    'reject' => function ($url, $model) {
+                        $url=['reject','id' => $model->id];
+                        if(yii::$app->User->can('Accountant')) {
+                            return Html::a('<span class="fa fa-retweet"></span>', $url, [
+                                'title' => 'Reject',
+                                'data-toggle' => 'tooltip', 'data-original-title' => 'Reject',
+                                'class' => 'btn btn-danger',
+                                'data' => [
+                                    'confirm' => Yii::t('app', 'Are you sure you want to reject this expenditure?'),
+                                    'method' => 'post',
+                                ],
+
+                            ]);
+
+                        }
                     }
                 ]
             ],

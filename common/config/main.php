@@ -40,6 +40,7 @@ return [
         'backup' => [
             'class' => 'spanjeta\modules\backup\Module',
         ],
+
     ],
 
 ];

@@ -75,7 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             'reference_no',
-            'attachment',
+
 
 
         ],
