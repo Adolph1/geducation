@@ -39,57 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value'=>'expType.type',
             ],
             'description',
-            [
-                'attribute'=>'branch_id',
-                'value'=>'branch.branch_name',
-            ],
-            [
-                'attribute'=>'department_id',
-                'value'=>'department.dept_name',
-            ],
-            [
-                'attribute'=>'payment_method',
-                'value'=>function($model){
-
-                    if($model->payment_method==null){
-
-                        return "";
-                    }
-                    elseif($model->payment_method!=null){
-
-                        return $model->payment->method_name;
-
-                    }
-
-                }
-            ],
-            [
-                'attribute'=>'fund_source',
-                'value'=>function($model){
-                    if($model->fund_source=='I'){
-                        return 'Within budget';
-                    }
-                    elseif($model->fund_source=='O'){
-
-                        return 'Out of budget';
-
-                    }
-                }
-            ],
-            'reference_no',
-            [
-                'attribute'=>'status',
-                'value'=>function($model){
-                    if($model->status=='U'){
-                        return 'Pending Approval';
-                    }
-                    elseif($model->status=='A'){
-
-                        return 'Approved';
-
-                    }
-                }
-            ],
+            'maker_id',
             [
                 'label'=>'attachment',
                 'format' => 'raw',
@@ -102,7 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         $basepath = Yii::$app->request->baseUrl.'/uploads/'.$model->attachment;
                         //$path = str_replace($basepath, '', $model->attachment);
-                        return Html::a('<i class="fa fa-download"></i> Download', $basepath, array('target'=>'_blank'));
+                        return Html::a('<i class="fa fa-eye"></i> View', $basepath, array('target'=>'_blank'));
 
 
                     }
@@ -145,6 +95,28 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
         ],
+    'clientOptions' => [
+        "lengthMenu"=> [[20,-1], [20,Yii::t('app',"All")]],
+        "info"=>false,
+        "responsive"=>true,
+        "dom"=> 'lfTrtip',
+        "tableTools"=>[
+            "aButtons"=> [
+                [
+                    "sExtends"=> "xls",
+                    "oSelectorOpts"=> ["page"=> 'current']
+                ],
+                [
+                    "sExtends"=> "pdf",
+                    "sButtonText"=> Yii::t('app',"Save to PDF")
+                ],
+                [
+                    "sExtends"=> "print",
+                    "sButtonText"=> Yii::t('app',"Print")
+                ],
+            ]
+        ]
+    ],
 
 
     ]); ?>

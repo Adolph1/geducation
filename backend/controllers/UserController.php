@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\Employee;
 use Yii;
 use backend\models\User;
 use backend\models\UserSearch;
@@ -132,17 +133,37 @@ class UserController extends Controller
      * @return mixed
      */
     public function actionDelete($id)
-    { if(yii::$app->User->can('createUser')) {
-        $this->findModel($id)->delete();
+    {
+        if (yii::$app->User->can('createUser')) {
+            $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
-    }
-    else{
-        Yii::$app->session->setFlash('danger', 'You dont have permition to delete user');
-        return $this->redirect(['index']);
-    }
+            return $this->redirect(['index']);
+        } else {
+            Yii::$app->session->setFlash('danger', 'You dont have permition to delete user');
+            return $this->redirect(['index']);
+        }
     }
 
+
+
+
+    public function actionProfile($id)
+    {
+        $model=$this->findModel($id);
+        $emp=$this->findEmpModel($model->emp_id);
+        $model->setScenario('admin-update');
+        if($model->load(Yii::$app->request->post())) {
+            Yii::$app->authManager->revokeAll($id);
+            Yii::$app->authManager->assign(Yii::$app->authManager->getRole($model->role), $id);
+            $model->save();
+            Yii::$app->session->setFlash('success', 'You have successfully changed your password.');
+            return $this->redirect(['profile', 'id' => $model->id]);
+        }else {
+            return $this->render('profile', [
+                'model' => $this->findModel($id), 'emp' => $emp
+            ]);
+        }
+    }
     /**
      * Finds the User model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
@@ -158,4 +179,16 @@ class UserController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
+
+    protected function findEmpModel($id)
+    {
+        if (($model = Employee::find()->where(['id'=>$id])->one()) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+
+
 }

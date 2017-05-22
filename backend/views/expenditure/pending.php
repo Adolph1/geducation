@@ -39,44 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value'=>'expType.type',
             ],
             'description',
-            [
-                'attribute'=>'branch_id',
-                'value'=>'branch.branch_name',
-            ],
-            [
-                'attribute'=>'department_id',
-                'value'=>'department.dept_name',
-            ],
-            [
-                'attribute'=>'payment_method',
-                'value'=>function($model){
-
-                    if($model->payment_method==null){
-
-                        return "";
-                    }
-                    elseif($model->payment_method!=null){
-
-                        return $model->payment->method_name;
-
-                    }
-
-                }
-            ],
-            [
-                'attribute'=>'fund_source',
-                'value'=>function($model){
-                    if($model->fund_source=='I'){
-                        return 'Within budget';
-                    }
-                    elseif($model->fund_source=='O'){
-
-                        return 'Out of budget';
-
-                    }
-                }
-            ],
-            'reference_no',
+            'maker_id',
             [
                 'label'=>'attachment',
                 'format' => 'raw',
@@ -163,6 +126,28 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
         ],
+    'clientOptions' => [
+        "lengthMenu"=> [[20,-1], [20,Yii::t('app',"All")]],
+        "info"=>false,
+        "responsive"=>true,
+        "dom"=> 'lfTrtip',
+        "tableTools"=>[
+            "aButtons"=> [
+                [
+                    "sExtends"=> "xls",
+                    "oSelectorOpts"=> ["page"=> 'current']
+                ],
+                [
+                    "sExtends"=> "pdf",
+                    "sButtonText"=> Yii::t('app',"Save to PDF")
+                ],
+                [
+                    "sExtends"=> "print",
+                    "sButtonText"=> Yii::t('app',"Print")
+                ],
+            ]
+        ]
+    ],
 
 
     ]); ?>

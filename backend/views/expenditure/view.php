@@ -14,7 +14,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?php // Html::encode($this->title) ?></h1>
 
-    <p>
+    <p style="float: right">
         <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
@@ -75,10 +75,16 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             'reference_no',
+            'maker_id',
+            'maker_time',
+            'checker',
+            'checker_time',
 
 
 
         ],
+
+
     ]) ?>
 
 </div>

@@ -83,37 +83,32 @@ desired effect
             <!-- Sidebar toggle button-->
             <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
                 <span class="sr-only">Toggle navigation</span>
-            </a>
 
+                        <span style="margin-top: 50px;font-family: Tahoma;color: #ccc;">
+                        <?php
+
+                        if (!Yii::$app->user->isGuest) {
+                            $user_id=Yii::$app->user->identity->id;
+                            ?>
+
+                            <?=  \backend\models\AuthItem::getRoleName(\backend\models\AuthAssignment::getRoleByUserId($user_id));?> @ <?php echo \backend\models\Branch::getBranchName(\backend\models\Employee::getBranchID(Yii::$app->user->identity->emp_id));?>
+                        <?php }?>
+                        </span>
+            </a>
+            <div id="user_id" hidden><?php
+                if (!Yii::$app->user->isGuest) {
+                    echo $userdept = \backend\models\Employee::getDepartmentID(Yii::$app->user->identity->emp_id);
+                }
+                ?></div>
             <!-- Navbar Right Menu -->
             <div class="navbar-custom-menu">
+
+                    <!-- Status -->
+
                 <ul class="nav navbar-nav">
                     <!-- Languages: style can be found in dropdown.less-->
                     <li class="dropdown messages-menu">
-                        <!-- Menu toggle button -->
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-flag"></i>
 
-                        </a>
-                        <ul class="dropdown-menu">
-
-                            <li>
-                                <!-- inner menu: contains the messages -->
-                                <ul class="menu">
-                                    <?php
-                                    /*$languages=\backend\models\Language::getAll();
-                                    foreach ($languages as $language)
-                                    {
-                                        echo '<a href="#" class="dropdown-toggle" data-toggle="dropdown" ><li style="padding: 10px" id="language">
-                                                <i class="fa fa-angle-double-right"></i>
-                                            '.$language->title.'
-                                            </li></a>';
-                                    }*/
-                                    ?>
-                                </ul><!-- /.menu -->
-                            </li>
-
-                        </ul>
                     </li><!-- /.Languages-menu -->
 
 
@@ -122,7 +117,6 @@ desired effect
                         <!-- Menu Toggle Button -->
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <!-- The user image in the navbar-->
-                            <img src="http://placehold.it/160x160" class="user-image" alt="User Image">
                             <!-- hidden-xs hides the username on small devices so only the image appears. -->
                             <span class="hidden-xs">
                                 <?php
@@ -140,7 +134,7 @@ desired effect
                                    if (!Yii::$app->user->isGuest) {
 
                                        echo Yii::$app->user->identity->username;
-                                         $user_id=Yii::$app->user->identity->id;
+
                                    }
 
                                     ?>
@@ -150,14 +144,22 @@ desired effect
                             <!-- Menu Footer-->
                             <li class="user-footer">
                                 <div class="pull-left">
-                                    <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                    <?php
+                                    if(!Yii::$app->user->isGuest) {
+                                        echo Html::beginForm(['/user/profile','id' => $user_id], 'post');
+                                        echo Html::submitButton(
+                                            'My profile',
+                                            ['class' => 'btn btn-link logout']
+                                        );
+                                        echo Html::endForm();
+                                    }?>
                                 </div>
                                 <div class="pull-right">
                                     <?php
                                     if(!Yii::$app->user->isGuest) {
                                         echo Html::beginForm(['/site/logout'], 'post');
                                         echo Html::submitButton(
-                                            'Logout (' . Yii::$app->user->identity->username . ')',
+                                            'Logout',
                                             ['class' => 'btn btn-link logout']
                                         );
                                         echo Html::endForm();
@@ -180,23 +182,7 @@ desired effect
 
             <!-- Sidebar user panel (optional) -->
             <div class="user-panel">
-                <div class="pull-left image">
-                    <img src="http://placehold.it/45x45" class="img-circle" alt="User Image">
-                </div>
-                <div class="pull-left info">
-                    <p><?php
-                        if (!Yii::$app->user->isGuest) {
-                            echo Yii::$app->user->identity->username;
-                        ?>
 
-                        <?php }?>
-                    </p>
-                    <!-- Status -->
-                    <?php
-                    if (!Yii::$app->user->isGuest) {?>
-                    <p style="color: green"><small><?=  \backend\models\AuthItem::getRoleName(\backend\models\AuthAssignment::getRoleByUserId($user_id));?> @ <?php echo \backend\models\Branch::getBranchName(\backend\models\Employee::getBranchID(Yii::$app->user->identity->emp_id));?></small></p>
-                <?php }?>
-                </div>
             </div>
 
             <!-- Sidebar Menu -->
@@ -277,33 +263,33 @@ desired effect
                         ],
 
                         [
-                            'visible' => (Yii::$app->user->identity->username == 'admin'),
+                            'visible' =>yii::$app->User->can('Accountant')||yii::$app->User->can('admin'),
                             "label" =>Yii::t('app','Settings'),
                             "url" => "#",
                             "icon" => "fa fa-gears",
                             "items" => [
 
                                 [
-                                    'visible' => (Yii::$app->user->identity->username == 'admin'),
+                                    'visible' => yii::$app->User->can('Accountant')||yii::$app->User->can('admin'),
                                     "label" => "Payment Method",
                                     "url" =>["/payment-method/index"],
                                     "icon" => "fa fa-angle-double-right",
                                 ],
                                 [
-                                    'visible' => (Yii::$app->user->identity->username == 'admin'),
+                                    'visible' =>  yii::$app->User->can('Accountant')||yii::$app->User->can('admin'),
                                     "label" =>  Yii::t('app', 'Users'),
                                     "url" => ["/user/index"],
                                     "icon" => "fa fa-user",
                                 ],
 
                                 [
-                                    'visible' => (Yii::$app->user->identity->username == 'admin'),
+                                    'visible' => yii::$app->User->can('admin'),
                                     'label' => Yii::t('app', 'Manager Permissions'),
                                     'url' => ['/auth-item/index'],
                                     'icon' => 'fa fa-lock',
                                 ],
                                 [
-                                    'visible' => (Yii::$app->user->identity->username == 'admin'),
+                                    'visible' => yii::$app->User->can('admin'),
                                     'label' => Yii::t('app', 'Manage User Roles'),
                                     'url' => ['/role/index'],
                                     'icon' => 'fa fa-lock',
@@ -500,55 +486,17 @@ desired effect
 
 </script>
 
+
 <script>
-
-    $("#refresh-form").click(function(){
-
-            window.location.reload(true);
-    });
-
-
-
-
-    $("#pricemaintanance-product_id").change(function(){
-        var id =document.getElementById("pricemaintanance-product_id").value;
+    $(document).ready(function(){
+        var id =document.getElementById("user_id").innerHTML;
         //alert(id);
-        $.get("<?php echo Yii::$app->urlManager->createUrl(['inventory/price','id'=>'']);?>"+id,function(data) {
+        $.get("<?php echo Yii::$app->urlManager->createUrl(['expenditure-type/filter','id'=>'']);?>"+id,function(data) {
 
             //alert(data);
-            document.getElementById("pricemaintanance-old_price").value = data;
+            $("#expenditure-type").html(data);
 
         });
-
-
     });
-
-    $("#productreturn-product_id").change(function(){
-        var id =document.getElementById("productreturn-product_id").value;
-        //alert(id);
-        $.get("<?php echo Yii::$app->urlManager->createUrl(['inventory/price','id'=>'']);?>"+id,function(data) {
-
-            //alert(data);
-            document.getElementById("productreturn-price").value = data;
-
-        });
-
-
-    });
-
-    $("#stockadjustment-product_id").change(function(){
-        var id =document.getElementById("stockadjustment-product_id").value;
-        //alert(id);
-        $.get("<?php echo Yii::$app->urlManager->createUrl(['inventory/qty','id'=>'']);?>"+id,function(data) {
-
-            //alert(data);
-            document.getElementById("stockadjustment-qty").value = data;
-
-        });
-
-
-    });
-
-
 
 </script>

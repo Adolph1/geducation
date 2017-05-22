@@ -120,6 +120,55 @@ class ExpenditureTypeController extends Controller
         return $this->redirect(['index']);
     }
 
+
+
+    //gets user expenditures types
+
+
+    public function actionFilter($id)
+    {
+        if(!yii::$app->User->can('Accountant')) {
+            $countTypes = ExpenditureType::find()
+                ->where(['department_id' => $id])
+                ->count();
+
+            $types = ExpenditureType::find()
+                ->where(['department_id' => $id])
+                ->orderBy('type ASC')
+                ->all();
+
+            if ($countTypes > 0) {
+                echo "<option value=''>" . "--Select--" . "</option>";
+                foreach ($types as $type) {
+
+                    echo "<option value='" . $type->id . "'>" . $type->type . "</option>";
+                }
+            } else {
+                echo "<option> </option>";
+            }
+        }
+        else{
+
+            $countTypes = ExpenditureType::find()
+                ->count();
+
+            $types = ExpenditureType::find()
+                ->orderBy('type ASC')
+                ->all();
+
+            if ($countTypes > 0) {
+                echo "<option value=''>" . "--Select--" . "</option>";
+                foreach ($types as $type) {
+
+                    echo "<option value='" . $type->id . "'>" . $type->type . "</option>";
+                }
+            } else {
+                echo "<option value=''>--Select--</option>";
+            }
+        }
+
+    }
+
     /**
      * Finds the ExpenditureType model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

@@ -74,7 +74,7 @@ class Expenditure extends \yii\db\ActiveRecord
             'attachment' => Yii::t('app', 'Attachment'),
             'status' => Yii::t('app', 'Status'),
             'delete_stat'=>'Delete status',
-            'maker_id' => Yii::t('app', 'Maker ID'),
+            'maker_id' => Yii::t('app', 'Maker'),
             'maker_time' => Yii::t('app', 'Maker Time'),
             'checker' => Yii::t('app', 'Checker'),
             'checker_time' => Yii::t('app', 'Checker Time'),
