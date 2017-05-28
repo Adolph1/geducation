@@ -46,7 +46,7 @@ class ReportController extends Controller
                 $from = $_GET['ReportSearch']['from'];
                 $to = $_GET['ReportSearch']['to'];
 
-                $dataProvider = $searchModel->search($branch, '', '');
+                $dataProvider = $searchModel->search($branch, $from, $to);
                 return $this->render('report', [
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
@@ -59,7 +59,7 @@ class ReportController extends Controller
                 $from = $_GET['ReportSearch']['from'];
                 $to = $_GET['ReportSearch']['to'];
                 $branch = Employee::getBranchID(Yii::$app->user->identity->emp_id);
-                $dataProvider = $searchModel->search($branch, '', '');
+                $dataProvider = $searchModel->search($branch,  $from, $to);
                 return $this->render('report', [
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,

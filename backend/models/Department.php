@@ -49,4 +49,15 @@ class Department extends \yii\db\ActiveRecord
     {
         return ArrayHelper::map(Department::find()->all(),'id','dept_name');
     }
+    
+        public static function getDepartmentName($id)
+    {
+        $branch=Department::find()->where(['id'=>$id])->one();
+        if($branch!=null){
+            return $branch->dept_name;
+        }
+        else{
+            return "";
+        }
+    }
 }

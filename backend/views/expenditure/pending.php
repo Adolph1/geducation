@@ -14,16 +14,22 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="expenditure-index">
 
     <h3><?= Html::encode($this->title) ?></h3>
-
-<?= \fedemotta\datatables\DataTables::widget([
+    <?=Html::beginForm(['expenditure/bulk'],'post');?>
+    <?php //Html::dropDownList('action','',[''=>'Mark selected as: ','c'=>'Confirmed','nc'=>'No Confirmed'],['class'=>'dropdown',])?>
+    <div style="float: inherit"><?=Html::submitButton('<i class="fa fa-check"></i> Approve All', ['class' => 'btn btn-info',]);?></div>
+<?= GridView::widget([
         'dataProvider' => $dataProvider,
         //'showFooter'=>true,
         //'showHeader' => true,
         //'showPageSummary' => true,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+            ['class' => 'kartik\grid\SerialColumn'],
 
             //'id',
+            [
+                'class'=>'kartik\grid\CheckboxColumn',
+                //'headerOptions'=>['class'=>'kartik-sheet-style'],
+            ],
             [
                 'attribute'=>'exp_dt',
 
@@ -41,6 +47,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'description',
             'maker_id',
             [
+                'attribute'=>'branch_id',
+                'value'=>'branch.branch_name',
+            ],
+            /*[
                 'label'=>'attachment',
                 'format' => 'raw',
                 'value'=>function($model){
@@ -57,7 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     }
                 }
-            ],
+            ],*/
             [
                 'class'=>'yii\grid\ActionColumn',
                 'header'=>'Actions',
@@ -105,50 +115,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     },
 
-                    'reject' => function ($url, $model) {
-                        $url=['reject','id' => $model->id];
-                        if(yii::$app->User->can('Accountant')) {
-                            return Html::a('<span class="fa fa-retweet"></span>', $url, [
-                                'title' => 'Reject',
-                                'data-toggle' => 'tooltip', 'data-original-title' => 'Reject',
-                                'class' => 'btn btn-danger',
-                                'data' => [
-                                    'confirm' => Yii::t('app', 'Are you sure you want to reject this expenditure?'),
-                                    'method' => 'post',
-                                ],
-
-                            ]);
-
-                        }
-                    }
                 ]
             ],
 
 
         ],
-    'clientOptions' => [
-        "lengthMenu"=> [[20,-1], [20,Yii::t('app',"All")]],
-        "info"=>false,
-        "responsive"=>true,
-        "dom"=> 'lfTrtip',
-        "tableTools"=>[
-            "aButtons"=> [
-                [
-                    "sExtends"=> "xls",
-                    "oSelectorOpts"=> ["page"=> 'current']
-                ],
-                [
-                    "sExtends"=> "pdf",
-                    "sButtonText"=> Yii::t('app',"Save to PDF")
-                ],
-                [
-                    "sExtends"=> "print",
-                    "sButtonText"=> Yii::t('app',"Print")
-                ],
-            ]
-        ]
-    ],
 
 
     ]); ?>
+    <?= Html::endForm();?>
 </div>

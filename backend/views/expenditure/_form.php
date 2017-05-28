@@ -41,7 +41,7 @@ use backend\models\ExpenditureType;
     </div>
     <div class="row">
         <div class="col-md-6">
-    <?= $form->field($model, 'type')->dropDownList(ExpenditureType::getAll(),['prompt'=>Yii::t('app','--Select--')]) ?>
+    <?= $form->field($model, 'type')->dropDownList([ExpenditureType::getAll(),'prompt'=>Yii::t('app','--Select--')]) ?>
 
         </div>
         <div class="col-md-6">

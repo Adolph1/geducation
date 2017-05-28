@@ -183,4 +183,19 @@ class ExpenditureSearch extends Expenditure
         return $dataProvider;
     }
 
+    public function lineChart()
+    {
+        $query=Expenditure::find();
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+        ]);
+        $pagination = false;
+        $query->select(['maker_id,exp_dt, branch_id,sum(amount) AS amount']);
+        $query->andWhere(['!=', 'status', 'U']);
+        $query->andFilterWhere(['between', 'exp_dt', date('Y').'-'.date('m').'-'.'01',  date('Y').'-'.date('m').'-'.'31']);
+        $query->groupBy(['maker_id']);
+        return $dataProvider;
+    }
+
 }

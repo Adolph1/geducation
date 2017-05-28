@@ -17,7 +17,7 @@ use backend\models\Branch;
 <div class="user-form">
     <div class="panel panel-primary">
         <div class="panel-heading">
-            <?= Yii::t('app', 'Customer Form'); ?>
+            <?= Yii::t('app', 'User Form'); ?>
         </div>
         <div class="panel-body">
 

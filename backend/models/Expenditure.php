@@ -102,4 +102,15 @@ class Expenditure extends \yii\db\ActiveRecord
     {
         return $this->hasOne(PaymentMethod::className(), ['id' => 'payment_method']);
     }
+
+
+public static function getPendingCount()
+{
+    $countpendings=Expenditure::find()->where(['status'=>'U'])->andFilterWhere(['!=','delete_stat','D'])->count();
+    if($countpendings!=null){
+        return $countpendings;
+    }else{
+        return "";
+    }
+}
 }

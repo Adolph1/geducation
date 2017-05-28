@@ -39,6 +39,6 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
     </div>
     <div class="col-md-3">
-        <div><?= Html::img(Yii::$app->request->baseUrl.'/uploads/Logo.jpg',['class'=>'img-square','width'=>'600px']);?></div>
+        <div><?php // Html::img(Yii::$app->request->baseUrl.'/uploads/Logo.jpg',['class'=>'img-square','width'=>'600px']);?></div>
     </div>
 </div>

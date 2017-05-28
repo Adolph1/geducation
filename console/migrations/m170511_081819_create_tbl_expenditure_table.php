@@ -60,10 +60,10 @@ class m170511_081819_create_tbl_expenditure_table extends Migration
             'tbl_expenditure'
         );
 
-        // drops index for column `supplier_id`
+        // drops index for column `branch_id`
         $this->dropIndex(
             'idx-tbl_expenditure-branch_id',
-            'tbl_employee'
+            'tbl_expenditure'
         );
         $this->dropTable('tbl_expenditure');
     }

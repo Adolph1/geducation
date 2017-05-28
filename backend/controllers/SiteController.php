@@ -1,6 +1,9 @@
 <?php
 namespace backend\controllers;
 
+use backend\models\Expenditure;
+use backend\models\ExpenditureSearch;
+use yii\data\ActiveDataProvider;
 use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -60,7 +63,11 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $searchModel = new ExpenditureSearch();
+        $dataProvider = $searchModel->lineChart();
+        return $this->render('index',[
+		'dataProvider' => $dataProvider
+        ]);
     }
 
     /**

@@ -107,9 +107,28 @@ desired effect
 
                 <ul class="nav navbar-nav">
                     <!-- Languages: style can be found in dropdown.less-->
-                    <li class="dropdown messages-menu">
+                    <li class="dropdown notifications-menu">
+                        <!-- Menu toggle button -->
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-bell"></i>
+                            <?php
+                            $less=\backend\models\Expenditure::getPendingCount();
+                            if($less!=0){
+                            ?>
+                            <span class="label label-warning"><?= $less; }?></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="header">You have <?= $less; ?> pending expenditures</li>
+                            <?php
+                            if ($less > 0) {
+                                echo '<li><div class="col-sm-12 text-center" style="padding: 10px">' . Html::a(Yii::t('app', 'View'), ['expenditure/pending'], ['class' => 'btn btn-primary']) . '</div></li>';
+                            }
 
-                    </li><!-- /.Languages-menu -->
+                            ?>
+
+                        </ul>
+                    </li>
+
 
 
                     <!-- User Account Menu -->
@@ -237,6 +256,33 @@ desired effect
                             ]
                         ],
 
+                        [
+                            "label" =>Yii::t('app','Budgets'),
+                            "url" =>  ["#"],
+                            "icon" => "fa fa-money",
+                            "items" => [
+
+                                [
+                                    'visible' =>yii::$app->User->can('Accountant')|| yii::$app->User->can('admin'),
+                                    "label" =>  Yii::t('app', 'New Budget'),
+                                    "url" => ["/budget/create"],
+                                    "icon" => "fa fa-plus",
+                                ],
+
+                                [
+                                    'visible' => yii::$app->User->can('Accountant')|| yii::$app->User->can('admin'),
+                                    "label" => "Transactions",
+                                    "url" =>["/budget/index"],
+                                    "icon" => "fa fa-money",
+                                ],
+                                [
+                                    'visible' => yii::$app->User->can('Accountant')|| yii::$app->User->can('admin'),
+                                    "label" => "Balances",
+                                    "url" =>["/budget-balance/index"],
+                                    "icon" => "fa fa-money",
+                                ],
+                        ],
+                        ],
                         [
                                 'visible' => yii::$app->User->can('Accountant')||yii::$app->User->can('admin'),
                                 "label" =>Yii::t('app','Employees'),

@@ -31,8 +31,10 @@
         "microinginer/yii2-dropdown-action-column": "dev-master",
         "spanjeta/yii2-backup": "*",
         "kartik-v/yii2-widget-datepicker": "@dev",
-        "phpoffice/phpexcel": "dev-develop",
-        "abhi1693/yii2-sms": "2.0.0"
+        "abhi1693/yii2-sms": "2.0.0",
+        "kartik-v/yii2-mpdf": "*",
+        "kartik-v/yii2-export": "*",
+        "sjaakp/yii2-gcharts": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

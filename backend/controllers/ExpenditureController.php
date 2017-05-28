@@ -116,7 +116,7 @@ class ExpenditureController extends Controller
             }
             else
             {
-                Yii::$app->session->setFlash('danger', 'You dont have permission to view this expenditure.');
+                Yii::$app->session->setFlash('danger', 'You don\'t have permission to view this expenditure.');
                 return $this->redirect(['index']);
             }
 
@@ -147,6 +147,11 @@ class ExpenditureController extends Controller
             if ($model->load(Yii::$app->request->post())) {
                 $model->attachment = UploadedFile::getInstance($model, 'attachment_file');
                 if ($model->attachment!=null) {
+                    if(Yii::$app->user->can('Accountant')) {
+                        $model->checker = Yii::$app->user->identity->username;
+                        $model->checker_time = date('Y-m-d:H:i:s');
+                        $model->status = 'A';
+                    }
                     $model->save();
                     $model->attachment->saveAs('uploads/' . Branch::getBranchName($model->branch_id).'--'.$model->id . '.' . $model->attachment->extension);
                     $model->attachment = Branch::getBranchName($model->branch_id).'--'.$model->id . '.' . $model->attachment->extension;
@@ -155,6 +160,11 @@ class ExpenditureController extends Controller
                 }
                 else
                 {
+                    if(Yii::$app->user->can('Accountant')) {
+                        $model->checker = Yii::$app->user->identity->username;
+                        $model->checker_time = date('Y-m-d:H:i:s');
+                        $model->status = 'A';
+                    }
                     $model->save();
                     return $this->redirect(['view', 'id' => $model->id]);
                 }
@@ -168,7 +178,7 @@ class ExpenditureController extends Controller
         else
         {
 
-            Yii::$app->session->setFlash('danger', 'You dont have permission to create expenditure.');
+            Yii::$app->session->setFlash('danger', 'You don\'t have permission to create expenditure.');
             return $this->redirect(['index']);
         }
     }
@@ -205,7 +215,11 @@ class ExpenditureController extends Controller
                         $model->attachment = Branch::getBranchName($model->branch_id) . '--' . $model->id . '.' . $model->attachment->extension;
                         $model->save();
                     }
-                    return $this->redirect(['view', 'id' => $model->id]);
+                    else
+                    {
+                        $model->save();
+                        return $this->redirect(['view', 'id' => $model->id]);
+                    }
                 } else {
                     return $this->render('update', [
                         'model' => $model,
@@ -213,12 +227,12 @@ class ExpenditureController extends Controller
                 }
             } else {
 
-                Yii::$app->session->setFlash('danger', 'You cant update the authorised expenditure.');
+                Yii::$app->session->setFlash('danger', 'You can\'t update the authorised expenditure.');
                 return $this->redirect(['index']);
             }
         }
         else{
-            Yii::$app->session->setFlash('danger', 'You dont have permission to update expenditure.');
+            Yii::$app->session->setFlash('danger', 'You don\'t have permission to update expenditure.');
             return $this->redirect(['index']);
         }
     }
@@ -241,8 +255,18 @@ class ExpenditureController extends Controller
             return $this->redirect(['index']);
         }
         elseif($model->status=='A') {
-            Yii::$app->session->setFlash('danger', 'You cant delete the authorised expenditure.');
-            return $this->redirect(['index']);
+            if(yii::$app->User->can('deleteExpenditure')){
+                $model->delete_stat = 'D';
+                $model->maker_id = Yii::$app->user->identity->username;
+                $model->maker_time = date('Y-m-d:H:i:s');
+                $model->save();
+                Yii::$app->session->setFlash('success', 'successfully deleted.');
+                return $this->redirect(['index']);
+            }
+            else {
+                Yii::$app->session->setFlash('danger', 'You don\'t have permission to delete the authorised expenditure,please contact your accountant or administrator.');
+                return $this->redirect(['index']);
+            }
         }
 
     }
@@ -259,13 +283,41 @@ class ExpenditureController extends Controller
             $model->checker = Yii::$app->user->identity->username;
             $model->checker_time = date('Y-m-d:H:i:s');
             $model->save();
-            return $this->redirect(['index']);
+            return $this->redirect(['pending']);
         }
         else{
-            Yii::$app->session->setFlash('danger', 'You dont have permission to approve the expenditure.');
-            return $this->redirect(['index']);
+            Yii::$app->session->setFlash('danger', 'You don\'t have permission to approve the expenditure.');
+            return $this->redirect(['pending']);
         }
 
+    }
+
+    public function actionBulk(){
+        if(yii::$app->User->can('verifyExpenditure')) {
+            $action = Yii::$app->request->post('action');
+                $selection = (array)Yii::$app->request->post('selection');//typecasting
+            if ($selection) {
+                foreach ($selection as $id) {
+                    $exp = Expenditure::findOne((int)$id);//make a typecasting
+                    //do your stuff
+                    $exp->status = 'A';
+                    $exp->checker = Yii::$app->user->identity->username;
+                    $exp->checker_time = date('Y-m-d:H:i:s');
+                    $exp->save();
+
+
+                }
+                return $this->redirect(['pending']);
+            }else {
+                Yii::$app->session->setFlash('warning', 'Nothing to approve,please check up the listed pending expenditures');
+                return $this->redirect(['pending']);
+
+            }
+        }
+        else{
+            Yii::$app->session->setFlash('danger', 'You don\'t have permission to approve the expenditure.');
+            return $this->redirect(['pending']);
+        }
     }
 
 

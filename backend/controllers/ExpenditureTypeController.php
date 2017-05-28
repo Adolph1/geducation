@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use Yii;
 use backend\models\ExpenditureType;
+use backend\models\Department;
 use backend\models\ExpenditureTypeSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -141,7 +142,7 @@ class ExpenditureTypeController extends Controller
                 echo "<option value=''>" . "--Select--" . "</option>";
                 foreach ($types as $type) {
 
-                    echo "<option value='" . $type->id . "'>" . $type->type . "</option>";
+                    echo "<option value='" . $type->id . "'>" .$type->type."</option>";
                 }
             } else {
                 echo "<option> </option>";
@@ -160,7 +161,7 @@ class ExpenditureTypeController extends Controller
                 echo "<option value=''>" . "--Select--" . "</option>";
                 foreach ($types as $type) {
 
-                    echo "<option value='" . $type->id . "'>" . $type->type . "</option>";
+                    echo "<option value='" . $type->id . "'>".$type->type. " - " .Department::getDepartmentName($type->department_id)."</option>";
                 }
             } else {
                 echo "<option value=''>--Select--</option>";
